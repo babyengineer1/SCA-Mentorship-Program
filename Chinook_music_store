@@ -1,0 +1,44 @@
+QUESTION_1: Which city has the best customer?
+
+SELECT BillingCity, SUM(total) AS New_total
+FROM Invoice
+GROUP BY BillingCity
+ORDER BY New_total DESC;
+
+QUESTION_2: Which countries has the most Invoices?
+SELECT BillingCountry, COUNT(Total) AS TopTotal
+FROM Invoice
+GROUP BY BillingCountry
+ORDER BY TopTotal DESC;
+
+QUESTION_3: Who is the best customer?
+SELECT c.CustomerId AS Id, FirstName AS Name, SUM(i.Total) AS BillPaid
+FROM Customer c, Invoice i
+WHERE ID = i.CustomerId
+GROUP BY Id
+ORDER BY BillPaid DESC;
+
+QUESTION_4: Use your query to return the email, first name, last name, and Genre of all Rock Music listeners. Return your list ordered alphabetically by email address stating with A.
+SELECT DISTINCT
+    c.CustomerId AS Id,
+	  c.Email AS Email,
+	  c.FirstName AS Fn,
+	  c.LastName AS Ln,
+	  g.Name AS GenreName
+FROM Customer c JOIN Invoice i
+ON Id = i.CustomerId JOIN InvoiceLine il
+ON i.InvoiceId = il.invoiceid JOIN Track t
+ON il.TrackId = t.TrackId JOIN Genre g
+ON g.GenreId = t.GenreId
+WHERE GenreName = "Rock"
+ORDER BY Email;
+
+QUESTION_5: 5. We want to find out the most popular music Genre for each country. We determine the most popular genre as the genre with the highest amount of purchases. Write a query that returns each country along with the top Genre. For countries where the maximum number of purchases is shared return all Genres.
+SELECT COUNT(i.InvoiceId) AS Val, g.Name AS GenreName, i.BillingCountry, c.CustomerId AS Id
+FROM Customer c JOIN Invoice i
+ON Id = i.CustomerId JOIN InvoiceLine il
+ON i.InvoiceId = il.invoiceid JOIN Track t
+ON il.TrackId = t.TrackId JOIN Genre g
+ON g.GenreId = t.GenreId
+GROUP BY i.BillingCountry
+ORDER BY Val DESC;
